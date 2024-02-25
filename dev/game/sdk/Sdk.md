@@ -32,8 +32,8 @@ Player --Actions--> WebSocketClient
 ConcurrentQueue<IMessage> MessageQueue
 // 待发送的消息。
 
-int FrequencyOfReceivingMessage
-// 每秒接收多少条消息。
+float FrequencyOfReceivingMessage
+// 每秒接收多少次消息。
 ```
 
 #### 方法
