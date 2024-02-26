@@ -35,6 +35,8 @@ WebSocketClient --GameState--> Viewer
 
 ### UI
 
+为玩家提供操作界面。
+
 #### 属性
 
 *如有需要，可添加、删除、修改。*
@@ -57,6 +59,8 @@ WebSocketClient --GameState--> Viewer
 ```
 
 ### WebSocketClient
+
+在实时播放模式下，向服务端发送控制命令，并从服务端接收游戏状态。
 
 #### 属性
 
@@ -81,6 +85,8 @@ WebSocketClient --GameState--> Viewer
 
 ### RecordLoader
 
+在回放模式下，获取可加载的记录文件；具有加载指定记录文件的功能。
+
 #### 属性
 
 *如有需要，可添加、删除、修改。*
@@ -104,6 +110,10 @@ WebSocketClient --GameState--> Viewer
 
 ### Viewer
 
+在回放模式下，播放已加载的回放文件。
+
+在实时播放模式下，展示用户所操控角色（本地玩家）视角。
+
 #### 属性
 
 *如有需要，可添加、删除、修改。*
@@ -126,6 +136,8 @@ WebSocketClient --GameState--> Viewer
 ```
 
 ### LocalPlayer
+
+可通过硬件操控。
 
 #### 属性
 
