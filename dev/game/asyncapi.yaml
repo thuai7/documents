@@ -78,32 +78,45 @@ components:
             type: object
             additionalProperties: false
             required:
+              - chunks
               - walls
               - PoisonousCircle
               - supplies
             properties:
+              chunks:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: false
+                  required:
+                    - chunkId
+                    - position
+              properties:
+                chunkId:
+                  type: integer
+                position:
+                  $ref: '#/components/schemas/PositionInt'
               walls:
                 type: array
                 items:
                   type: object
                   required:
-                    - startPosition
-                    - endPosition
+                    - startChunk
+                    - endChunk
                   properties:
-                    startPosition:
-                      $ref: '#/components/schemas/Position'
-                    endPosition:
-                      $ref: '#/components/schemas/Position'
+                    startChunk:
+                      type: integer
+                    endChunk:
+                      type: integer
               PoisonousCircle:
                 type: object
                 required:
-                  - centerPosition
-                  - speed
+                  - poisonousChunks
                 properties:
-                  centerPosition:
-                    $ref: '#/components/schemas/Position'
-                  speed:
-                    type: number
+                  poisonousChunks:
+                    type: array
+                    items:
+                      type: integer
               supplies:
                 type: array
                 items:
@@ -122,8 +135,6 @@ components:
                         - GRENADE
                         - PRIMARY_ARMOR
                         - PREMIUM_ARMOR
-                        - SMALL_BAG
-                        - BIG_BAG
                         - S686
                         - VECTOR
                         - M16
@@ -162,11 +173,9 @@ components:
             required:
               - playerId
               - armor
-              - bag
               - health
               - speed
-              - firstFirearm
-              - secondFirearm
+              - firearm
               - inventory
               - position
             properties:
@@ -178,22 +187,15 @@ components:
                   - NO_ARMOR
                   - PRIMARY_ARMOR
                   - PREMIUM_ARMOR
-              bag:
-                type: string
-                enum:
-                  - NO_BAG
-                  - SMALL_BAG
-                  - BIG_BAG
               health:
                 type: integer
               speed:
                 type: number
-              firstFirearm:
+              firearm:
                 type: object
                 required:
                   - name
-                  - rate
-                  - reloadTime
+                  - windup
                   - distance
                 properties:
                   name:
@@ -203,14 +205,10 @@ components:
                       - VECTOR
                       - M16
                       - AWM
-                  rate:
-                    type: number
-                  reloadTime:
+                  windup:
                     type: number
                   distance:
                     type: number
-              secondFirearm:
-                type: string
               inventory:
                 type: array
                 items:
@@ -304,12 +302,20 @@ components:
       required:
         - eventType
         - playerId
+        - targetFirearm
       properties:
         eventType:
           type: string
           const: PLAYER_SWITCH_ARM
         playerId:
           type: integer
+        targetFirearm:
+          type: string
+          enum:
+            - S686
+            - VECTORY
+            - AWM
+            - M16
     PlayerPickUpEvent:
       type: object
       additionalProperties: false
@@ -334,8 +340,6 @@ components:
             - GRENADE
             - PRIMARY_ARMOR
             - PREMIUM_ARMOR
-            - SMALL_BAG
-            - BIG_BAG
             - S686
             - VECTOR
             - M16
@@ -406,8 +410,6 @@ components:
                   - GRENADE
                   - PRIMARY_ARMOR
                   - PREMIUM_ARMOR
-                  - SMALL_BAG
-                  - BIG_BAG
                   - S686
                   - VECTOR
                   - M16
