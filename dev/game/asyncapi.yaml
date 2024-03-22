@@ -2,70 +2,268 @@ asyncapi: 3.0.0
 info:
   title: Viewer API
   version: ''
+servers:
+  production:
+    host: broker.mycompany.com
+    protocol: qwee
+    security:
+      - $ref: '#/components/securitySchemes/user-password'
 channels:
   /competition/control:
     address: /competition/control
     messages:
-      publish.message.0:
-        $ref: '#/components/messages/CompetitionControlCommand'
-      publish.message.1:
-        $ref: '#/components/messages/HostConfigurationFromClient'
-      subscribe.message.0:
+      ChooseOrigin:
+        $ref: '#/components/messages/ChooseOrigin'
+      GetMap:
+        $ref: '#/components/messages/GetMap'
+      GetPlayerInfo:
+        $ref: '#/components/messages/GetPlayerInfo'
+      PerformAttack:
+        $ref: '#/components/messages/PerformAttack'
+      PerformMove:
+        $ref: '#/components/messages/PerformMove'
+      PerformUseGrenade:
+        $ref: '#/components/messages/PerformUseGrenade'
+      PerformUseMedicine:
+        $ref: '#/components/messages/PerformUseMedicine'
+      PerformSwitchArm:
+        $ref: '#/components/messages/PerformSwitchArm'
+      PerformPickUp:
+        $ref: '#/components/messages/PerformPickUp'
+      PerformAbandon:
+        $ref: '#/components/messages/PerformAbandon'
+      Error:
         $ref: '#/components/messages/Error'
-      subscribe.message.1:
-        $ref: '#/components/messages/HostConfigurationFromServer'
-  /competition/updates:
-    address: /competition/updates
-    messages:
-      subscribe.message.0:
+      CompetitionUpdate:
         $ref: '#/components/messages/CompetitionUpdate'
-      subscribe.message.1:
-        $ref: '#/components/messages/Error'
+      Map:
+        $ref: '#/components/messages/Map'
+      Events:
+        $ref: '#/components/messages/Events'
+      Supplies:
+        $ref: '#/components/messages/Supplies'
 operations:
   /competition/control.publish:
     action: receive
     channel:
       $ref: '#/channels/~1competition~1control'
     messages:
-      - $ref: '#/channels/~1competition~1control/messages/publish.message.0'
-      - $ref: '#/channels/~1competition~1control/messages/publish.message.1'
+      - $ref: '#/channels/~1competition~1control/messages/ChooseOrigin'
+      - $ref: '#/channels/~1competition~1control/messages/GetMap'
+      - $ref: '#/channels/~1competition~1control/messages/GetPlayerInfo'
+      - $ref: '#/channels/~1competition~1control/messages/PerformAttack'
+      - $ref: '#/channels/~1competition~1control/messages/PerformMove'
+      - $ref: '#/channels/~1competition~1control/messages/PerformUseGrenade'
+      - $ref: '#/channels/~1competition~1control/messages/PerformUseMedicine'
+      - $ref: '#/channels/~1competition~1control/messages/PerformSwitchArm'
+      - $ref: '#/channels/~1competition~1control/messages/PerformPickUp'
+      - $ref: '#/channels/~1competition~1control/messages/PerformAbandon'
   /competition/control.subscribe:
     action: send
     channel:
       $ref: '#/channels/~1competition~1control'
     messages:
-      - $ref: '#/channels/~1competition~1control/messages/subscribe.message.0'
-      - $ref: '#/channels/~1competition~1control/messages/subscribe.message.1'
-  /competition/updates.subscribe:
-    action: send
-    channel:
-      $ref: '#/channels/~1competition~1updates'
-    messages:
-      - $ref: '#/channels/~1competition~1updates/messages/subscribe.message.0'
-      - $ref: '#/channels/~1competition~1updates/messages/subscribe.message.1'
+      - $ref: '#/channels/~1competition~1control/messages/Error'
+      - $ref: '#/channels/~1competition~1control/messages/CompetitionUpdate'
+      - $ref: '#/channels/~1competition~1control/messages/Map'
+      - $ref: '#/channels/~1competition~1control/messages/Events'
+      - $ref: '#/channels/~1competition~1control/messages/Supplies'
 components:
+  securitySchemes:
+    user-password:
+      type: userPassword
   messages:
-    CompetitionControlCommand:
+    ChooseOrigin:
       payload:
         type: object
         additionalProperties: false
         required:
           - messageType
           - token
-          - command
+          - originPosition
         properties:
           messageType:
             type: string
-            const: COMPETITION_CONTROL_COMMAND
+            const: CHOOSE_ORIGIN
           token:
             type: string
-          command:
+          originPosition:
+            $ref: '#/components/schemas/Position'
+    GetMap:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - token
+        properties:
+          messageType:
+            type: string
+            const: GET_MAP
+          token:
+            type: string
+    GetPlayerInfo:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - token
+        properties:
+          messageType:
+            type: string
+            const: GET_PLAYER_INFO
+          token:
+            type: string
+    PerformAttack:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - token
+          - targetPosition
+        properties:
+          messageType:
+            type: string
+            const: PERFORM_ATTACK
+          token:
+            type: string
+          targetPosition:
+            $ref: '#/components/schemas/Position'
+    PerformMove:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - token
+          - direction
+        properties:
+          messageType:
+            type: string
+            const: PERFORM_MOVE
+          token:
+            type: string
+          direction:
+            description: a vector
+            $ref: '#/components/schemas/Position'
+    PerformUseGrenade:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - token
+          - targetPosition
+        properties:
+          messageType:
+            type: string
+            const: PERFORM_USE_GRENADE
+          token:
+            type: string
+          targetPosition:
+            $ref: '#/components/schemas/Position'
+    PerformUseMedicine:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - token
+          - medicineName
+        properties:
+          messageType:
+            type: string
+            const: PERFORM_USE_MEDICINE
+          token:
+            type: string
+          medicineName:
             type: string
             enum:
-              - START
-              - END
-              - RESET
-              - GET_HOST_CONFIGURATION
+              - BEVERAGE
+              - BANDAGE
+              - FIRST_AID
+    PerformSwitchArm:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - token
+          - targetFirearm
+        properties:
+          messageType:
+            type: string
+            const: PERFORM_SWITCH_ARM
+          token:
+            type: string
+          targetFirearm:
+            type: string
+            enum:
+              - S686
+              - VECTORY
+              - AWM
+              - M16
+    PerformPickUp:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - token
+          - targetSupply
+          - targetPosition
+        properties:
+          messageType:
+            type: string
+            const: PERFORM_PICK_UP
+          token:
+            type: string
+          targetSupply:
+            type: string
+            enum:
+              - S686
+              - VECTORY
+              - AWM
+              - M16
+              - BULLET
+              - BEVERAGE
+              - BANDAGE
+              - PRIMARY_ARMOR
+              - PREMIUM_ARMOR
+              - FIRST_AID
+              - GRENADE
+          targetPosition:
+            $ref: '#/components/schemas/Position'
+    PerformAbandon:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - token
+          - targetSupply
+        properties:
+          messageType:
+            type: string
+            const: PERFORM_ABANDON
+          token:
+            type: string
+          targetSupply:
+            type: string
+            enum:
+              - S686
+              - VECTORY
+              - AWM
+              - M16
+              - BULLET
+              - BEVERAGE
+              - BANDAGE
+              - PRIMARY_ARMOR
+              - PREMIUM_ARMOR
+              - FIRST_AID
+              - GRENADE
     CompetitionUpdate:
       payload:
         type: object
@@ -74,83 +272,6 @@ components:
           messageType:
             type: string
             const: COMPETITION_UPDATE
-          map:
-            type: object
-            additionalProperties: false
-            required:
-              - chunks
-              - walls
-              - PoisonousCircle
-              - supplies
-            properties:
-              chunks:
-                type: array
-                items:
-                  type: object
-                  additionalProperties: false
-                  required:
-                    - chunkId
-                    - position
-              properties:
-                chunkId:
-                  type: integer
-                position:
-                  $ref: '#/components/schemas/PositionInt'
-              walls:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - startChunk
-                    - endChunk
-                  properties:
-                    startChunk:
-                      type: integer
-                    endChunk:
-                      type: integer
-              PoisonousCircle:
-                type: object
-                required:
-                  - poisonousChunks
-                properties:
-                  poisonousChunks:
-                    type: array
-                    items:
-                      type: integer
-              supplies:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - name
-                    - position
-                  properties:
-                    name:
-                      type: string
-                      enum:
-                        - BULLET
-                        - FIRST_AID
-                        - BANDAGE
-                        - BEVERAGE
-                        - GRENADE
-                        - PRIMARY_ARMOR
-                        - PREMIUM_ARMOR
-                        - S686
-                        - VECTOR
-                        - M16
-                        - AWM
-                    position:
-                      $ref: '#/components/schemas/Position'
-          events:
-            type: array
-            items:
-              oneOf:
-                - $ref: '#/components/schemas/PlayerAttackEvent'
-                - $ref: '#/components/schemas/PlayerSwitchArmEvent'
-                - $ref: '#/components/schemas/PlayerPickUpEvent'
-                - $ref: '#/components/schemas/PlayerUseMedicineEvent'
-                - $ref: '#/components/schemas/PlayerUseGrenadeEvent'
-                - $ref: '#/components/schemas/PlayerAbandonEvent'
           info:
             type: object
             additionalProperties: false
@@ -230,6 +351,84 @@ components:
                     type: integer
               position:
                 $ref: '#/components/schemas/Position'
+    Events:
+      payload:
+        type: array
+        items:
+          oneOf:
+            - $ref: '#/components/schemas/PlayerAttackEvent'
+            - $ref: '#/components/schemas/PlayerSwitchArmEvent'
+            - $ref: '#/components/schemas/PlayerPickUpEvent'
+            - $ref: '#/components/schemas/PlayerUseMedicineEvent'
+            - $ref: '#/components/schemas/PlayerUseGrenadeEvent'
+            - $ref: '#/components/schemas/PlayerAbandonEvent'
+    Map:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - chunks
+          - walls
+          - PoisonousCircle
+        properties:
+          chunks:
+            type: array
+            items:
+              type: object
+              additionalProperties: false
+              required:
+                - chunkId
+                - position
+          properties:
+            chunkId:
+              type: integer
+            position:
+              $ref: '#/components/schemas/PositionInt'
+          walls:
+            type: array
+            items:
+              type: object
+              required:
+                - wallChunks
+              properties:
+                wallChunks:
+                  type: array
+                  items:
+                    type: integer
+          PoisonousCircle:
+            type: object
+            required:
+              - poisonousChunks
+            properties:
+              poisonousChunks:
+                type: array
+                items:
+                  type: integer
+    Supplies:
+      payload:
+        type: array
+        items:
+          type: object
+          required:
+            - name
+            - position
+          properties:
+            name:
+              type: string
+              enum:
+                - BULLET
+                - FIRST_AID
+                - BANDAGE
+                - BEVERAGE
+                - GRENADE
+                - PRIMARY_ARMOR
+                - PREMIUM_ARMOR
+                - S686
+                - VECTOR
+                - M16
+                - AWM
+            position:
+              $ref: '#/components/schemas/Position'
     Error:
       payload:
         type: object
@@ -246,40 +445,6 @@ components:
             type: integer
           message:
             type: string
-    HostConfigurationFromClient:
-      payload:
-        type: object
-        additionalProperties: false
-        required:
-          - messageType
-          - token
-          - configuration
-        properties:
-          messageType:
-            type: string
-            const: HOST_CONFIGURATION_FROM_CLIENT
-          token:
-            type: string
-          configuration:
-            $ref: '#/components/schemas/HostConfiguration'
-    HostConfigurationFromServer:
-      payload:
-        type: object
-        additionalProperties: false
-        required:
-          - messageType
-          - availableSerialPorts
-          - configuration
-        properties:
-          messageType:
-            type: string
-            const: HOST_CONFIGURATION_FROM_SERVER
-          availableSerialPorts:
-            type: array
-            items:
-              type: string
-          configuration:
-            $ref: '#/components/schemas/HostConfiguration'
   schemas:
     PlayerAttackEvent:
       type: object
@@ -436,34 +601,4 @@ components:
           type: integer
         'y':
           type: integer
-    HostConfiguration:
-      type: object
-      additionalProperties: false
-      required:
-        - players
-        - serialPorts
-      properties:
-        players:
-          type: array
-          items:
-            type: object
-            additionalProperties: false
-            required:
-              - playerId
-            properties:
-              playerId:
-                type: integer
-              serialPort:
-                type: string
-        serialPorts:
-          type: array
-          items:
-            type: object
-            additionalProperties: false
-            required:
-              - portName
-            properties:
-              portName:
-                type: string
-              baudRate:
-                type: integer
+
