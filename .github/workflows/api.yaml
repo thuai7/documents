@@ -10,7 +10,7 @@ jobs:
       - run: |
           mkdir -p site/api/
 
-      - uses: docker://asyncapi/github-action-for-generator:2.1.12
+      - uses: docker://asyncapi/github-action-for-generator:3.0.0
         with:
           filepath: api/asyncapi.yaml
           template: '@asyncapi/html-template@0.28.4'
