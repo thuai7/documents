@@ -12,6 +12,7 @@ jobs:
 
       - uses: asyncapi/github-action-for-cli@v3.1.1
         with:
+          filepath: api/asyncapi.yaml
           output: site/api/
 
       - uses: actions/upload-pages-artifact@v3
