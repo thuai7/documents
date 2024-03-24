@@ -4,6 +4,10 @@
 
 ## 传送门
 
+### API
+
+https://thuai7.github.io/documents/api/
+
 ### 游戏架构
 
 [游戏服务端](dev/game/server/Server.md)
