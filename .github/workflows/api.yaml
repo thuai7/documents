@@ -1,5 +1,5 @@
 on:
-    push:
+  push:
 
 jobs:
   generate-documentation:
@@ -12,12 +12,9 @@ jobs:
 
       - uses: asyncapi/github-action-for-cli@v3.1.1
         with:
-          command: generate
-          filepath: api/asyncapi.yaml
-          template: '@asyncapi/html-template@0.28.4'
           output: site/api/
 
-      - uses: actions/upload-pages-artifact@v2
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: site/
 
@@ -28,4 +25,4 @@ jobs:
       pages: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/deploy-pages@v2
+      - uses: actions/deploy-pages@v4
