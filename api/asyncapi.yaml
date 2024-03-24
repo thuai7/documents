@@ -385,13 +385,16 @@ components:
       type: object
       additionalProperties: false
       required:
-        - messageType
-        - token
-        - targetSupply
+          - messageType
+          - token
+          - targetSupply
+          - numb
       properties:
         messageType:
           type: string
           const: PERFORM_ABANDON
+        numb:
+          type: integer
         token:
           type: string
         targetSupply:
@@ -514,11 +517,14 @@ components:
         - eventType
         - playerId
         - abandonedSupplies
+        - numb
       properties:
         eventType:
           type: string
           const: PLAYER_ABANDON
         playerId:
+          type: integer
+        numb:
           type: integer
         abandonedSupplies:
           type: array
